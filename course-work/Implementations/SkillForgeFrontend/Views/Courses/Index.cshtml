@@ -1,0 +1,105 @@
+﻿@model SkillForgeFrontend.Models.PagedCourseViewModel
+@{
+    ViewData["Title"] = "Courses";
+    var currentSortBy = Context.Request.Query["sortBy"].ToString();
+    var currentDescending = Context.Request.Query["descending"].ToString().ToLower() == "true";
+}
+
+<h2>Courses</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Create New Course</a>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="title" class="form-control" placeholder="Search by Title" value="@Context.Request.Query["title"]" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="instructor" class="form-control" placeholder="Search by Instructor" value="@Context.Request.Query["instructor"]" />
+    </div>
+    <div class="col-md-3">
+        <select name="sortBy" class="form-select">
+            <option value="title" selected="@(currentSortBy == "title")">Sort by Title</option>
+            <option value="instructor" selected="@(currentSortBy == "instructor")">Sort by Instructor</option>
+        </select>
+
+    </div>
+    <div class="col-md-3">
+        <select name="descending" class="form-select">
+            <option value="false" selected="@(currentDescending == false)">Ascending</option>
+            <option value="true" selected="@(currentDescending == true)">Descending</option>
+        </select>
+    </div>
+    <div class="col-md-12 mt-2">
+        <button type="submit" class="btn btn-primary w-100">Search & Sort</button>
+    </div>
+
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Instructor</th>
+            <th>Actions</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model.Data)
+        {
+            <tr>
+                <td>@course.Title</td>
+                <td>@course.Description</td>
+                <td>@course.InstructorUsername</td>
+                <td>
+                    @if (User.IsInRole("Admin") || course.InstructorUsername == User.Identity?.Name)
+                    {
+                        <form method="post" asp-action="Delete" asp-route-id="@course.CourseId" onsubmit="return confirm('Are you sure?');" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@course.CourseId">Edit</a>
+                    }
+                </td>
+                <td>
+                    @if (!course.IsEnrolled
+                   && (User.IsInRole("User") || User.IsInRole("Instructor"))
+                   && course.InstructorUsername != User.Identity?.Name)
+                    {
+                        <form method="post" asp-action="Join" asp-route-id="@course.CourseId" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Join</button>
+                        </form>
+                    }
+                    else if (course.IsEnrolled)
+                    {
+                        <span class="text-muted">Enrolled</span>
+                        <form method="post" asp-action="Unenroll" asp-route-id="@course.CourseId" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Unenroll</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalCount > Model.PageSize)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalCount / Model.PageSize); i++)
+            {
+                <li class="page-item @(Model.Page == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-title="@Context.Request.Query["title"]"
+                       asp-route-instructor="@Context.Request.Query["instructor"]"
+                       asp-route-sortBy="@currentSortBy"
+                       asp-route-descending="@currentDescending.ToString().ToLower()">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

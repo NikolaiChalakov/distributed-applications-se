@@ -1,0 +1,76 @@
+﻿@model SkillForgeFrontend.Models.PagedEnrollmentViewModel
+
+@{
+    ViewData["Title"] = "Enrollments";
+    var currentSortBy = Context.Request.Query["sortBy"].ToString();
+    var currentDescending = Context.Request.Query["descending"].ToString().ToLower() == "true";
+}
+
+<h2>Enrollments</h2>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="username" class="form-control" placeholder="Search by Username" value="@Context.Request.Query["username"]" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="courseTitle" class="form-control" placeholder="Search by Course Title" value="@Context.Request.Query["courseTitle"]" />
+    </div>
+    <div class="col-md-3">
+        <select name="sortBy" class="form-select">
+            <option value="username" selected="@(currentSortBy == "username")">Sort by Username</option>
+            <option value="coursetitle" selected="@(currentSortBy == "coursetitle")">Sort by Course Title</option>
+            <option value="enrolledat" selected="@(currentSortBy == "enrolledat")">Sort by Enrolled Date</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="descending" class="form-select">
+            <option value="false" selected="@(currentDescending == false)">Ascending</option>
+            <option value="true" selected="@(currentDescending == true)">Descending</option>
+        </select>
+    </div>
+    <div class="col-md-12 mt-2">
+        <button type="submit" class="btn btn-primary w-100">Search & Sort</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Course Title</th>
+            <th>Enrolled At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model.Data)
+        {
+            <tr>
+                <td>@e.Username</td>
+                <td>@e.CourseTitle</td>
+                <td>@e.EnrolledAt.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalCount > Model.PageSize)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalCount / Model.PageSize); i++)
+            {
+                <li class="page-item @(Model.Page == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-username="@Context.Request.Query["username"]"
+                       asp-route-courseTitle="@Context.Request.Query["courseTitle"]"
+                       asp-route-sortBy="@currentSortBy"
+                       asp-route-descending="@currentDescending.ToString().ToLower()">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

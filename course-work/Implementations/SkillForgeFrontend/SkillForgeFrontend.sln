@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.36105.23 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillForgeFrontend", "SkillForgeFrontend.csproj", "{35E826EB-D1DE-497A-9F72-B98D7ABC3B72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35E826EB-D1DE-497A-9F72-B98D7ABC3B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E826EB-D1DE-497A-9F72-B98D7ABC3B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E826EB-D1DE-497A-9F72-B98D7ABC3B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E826EB-D1DE-497A-9F72-B98D7ABC3B72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1FD6F8D4-84E4-4EB2-B7DE-262EC9CB88B7}
+	EndGlobalSection
+EndGlobal
